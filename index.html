@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <h2>Merge Two PDF Files</h2>
+
+      <div id="upload-area-1" class="upload-area">Drag & Drop First PDF Here or Click</div>
+      <input type="file" id="file-input-1" style="display: none;" accept=".pdf" />
+
+      <div id="upload-area-2" class="upload-area">Drag & Drop Second PDF Here or Click</div>
+      <input type="file" id="file-input-2" style="display: none;" accept=".pdf" />
+
+      <button id="merge-button" disabled>Merge PDFs</button>
+    </div>
+  </body>
+</html>
