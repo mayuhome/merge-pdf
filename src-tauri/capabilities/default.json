@@ -11,7 +11,12 @@
     "fs:default",
     {
       "identifier": "fs:allow-app-write",
-      "allow": [{ "path": "/Users/majade/projects/merge-pdf/*" }]
-    }
+      "allow": [
+        {
+          "path": "/Users/majade/projects/merge-pdf/*"
+        }
+      ]
+    },
+    "dialog:default"
   ]
 }

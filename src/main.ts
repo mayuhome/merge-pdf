@@ -1,4 +1,5 @@
 import { BaseDirectory } from '@tauri-apps/api/path';
+import { save } from '@tauri-apps/plugin-dialog';
 import { writeFile } from '@tauri-apps/plugin-fs';
 import { PDFDocument } from 'pdf-lib';
 
@@ -7,7 +8,6 @@ const uploadArea1 = document.getElementById('upload-area-1') as HTMLDivElement;
     const fileInput1 = document.getElementById('file-input-1') as HTMLInputElement;
     const fileInput2 = document.getElementById('file-input-2') as HTMLInputElement;
     const mergeButton = document.getElementById('merge-button') as HTMLButtonElement;
-
     let pdfFilePath1: any = null;
     let pdfFilePath2: any = null;
 
@@ -55,32 +55,41 @@ const uploadArea1 = document.getElementById('upload-area-1') as HTMLDivElement;
 
     async function mergePdfFiles() {
       try {
-        // read pdf files
+        const path = await save({
+          filters: [
+            {
+              name: 'My Filter',
+              extensions: ['pdf'],
+            },
+          ],
+        });
+        console.log(path);
+  
         if (!fileInput1.files || !fileInput2.files) {
           throw new Error('Please select both PDF files.');
         }
         const pdfBytes1 = await fileInput1.files[0].arrayBuffer();
         const pdfBytes2 = await fileInput2.files[0].arrayBuffer();
-
+  
         // merge pdf files
         const pdfDoc1 = await PDFDocument.load(pdfBytes1);
         const pdfDoc2 = await PDFDocument.load(pdfBytes2);
         const mergedPdf = await PDFDocument.create();
-
+  
         const pages1 = await mergedPdf.copyPages(pdfDoc1, pdfDoc1.getPageIndices());
         const pages2 = await mergedPdf.copyPages(pdfDoc2, pdfDoc2.getPageIndices());
-
+  
         pages1.forEach((page) => mergedPdf.addPage(page));
         pages2.forEach((page) => mergedPdf.addPage(page));
-
+  
         // Save merged PDF
         const mergedPdfBytes = await mergedPdf.save();
-        const outputFilePath =  '/Users/majade/projects/merge-pdf/merged_output.pdf';
-        console.log('outputFilePath:', outputFilePath);
-        
-        await writeFile(outputFilePath, mergedPdfBytes, { baseDir: BaseDirectory.AppLocalData});
-
-        alert(`PDFs merged successfully! File saved at: ${outputFilePath}`);
+        if (!path) {
+          return;
+        }
+          await writeFile(path, mergedPdfBytes, { baseDir: BaseDirectory.AppLocalData});
+  
+          alert(`PDFs merged successfully! File saved at: ${path}`);
       } catch (error) {
         console.error('Error merging PDFs:', error);
         alert('Failed to merge PDFs. Check the console for more details.');
